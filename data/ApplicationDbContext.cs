@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using BilingualLearningSystem.Models.Identity; // This points to Step 2
+using BilingualLearningSystem.Models.Identity;
+using BilingualLearningSystem.Models.Admin; // This points to Step 2
 
 namespace BilingualLearningSystem.Data
 {
@@ -12,6 +13,7 @@ namespace BilingualLearningSystem.Data
         {
         }
 
+        public DbSet<ReportTicket> ReportTickets { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
