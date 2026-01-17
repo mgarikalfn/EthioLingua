@@ -100,9 +100,9 @@
 /home/girum/Desktop/projects/dotnet/BilingualLearningSystem/obj/Debug/net8.0/scopedcss/Views/Shared/_Layout.cshtml.rz.scp.css
 /home/girum/Desktop/projects/dotnet/BilingualLearningSystem/obj/Debug/net8.0/scopedcss/bundle/BilingualLearningSystem.styles.css
 /home/girum/Desktop/projects/dotnet/BilingualLearningSystem/obj/Debug/net8.0/scopedcss/projectbundle/BilingualLearningSystem.bundle.scp.css
-/home/girum/Desktop/projects/dotnet/BilingualLearningSystem/obj/Debug/net8.0/Bilingua.7E324D91.Up2Date
 /home/girum/Desktop/projects/dotnet/BilingualLearningSystem/obj/Debug/net8.0/BilingualLearningSystem.dll
 /home/girum/Desktop/projects/dotnet/BilingualLearningSystem/obj/Debug/net8.0/refint/BilingualLearningSystem.dll
 /home/girum/Desktop/projects/dotnet/BilingualLearningSystem/obj/Debug/net8.0/BilingualLearningSystem.pdb
 /home/girum/Desktop/projects/dotnet/BilingualLearningSystem/obj/Debug/net8.0/BilingualLearningSystem.genruntimeconfig.cache
 /home/girum/Desktop/projects/dotnet/BilingualLearningSystem/obj/Debug/net8.0/ref/BilingualLearningSystem.dll
+/home/girum/Desktop/projects/dotnet/BilingualLearningSystem/obj/Debug/net8.0/BilingualLearningSystem.csproj.CopyComplete

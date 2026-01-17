@@ -5,16 +5,17 @@ using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. SERVICES CONFIGURATION
+// 1. DATABASE CONFIGURATION
 // ---------------------------------------------------------
-
-// Add Database Context using Pomelo MySQL driver
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// Add Identity Service with basic password rules
+// 2. IDENTITY CONFIGURATION
+// ---------------------------------------------------------
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
+    // Password settings (relaxed for development)
     options.Password.RequireDigit = false;
     options.Password.RequiredLength = 6;
     options.Password.RequireNonAlphanumeric = false;
@@ -24,12 +25,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// Add MVC Services
+// 3. MVC SERVICES
+// ---------------------------------------------------------
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// 2. DATABASE INITIALIZATION & SEEDING
+// 4. AUTOMATIC MIGRATION & SEEDING
 // ---------------------------------------------------------
 using (var scope = app.Services.CreateScope())
 {
@@ -38,23 +40,22 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
         
-        // Ensure database and tables are created (without deleting existing data)
-        context.Database.EnsureCreated(); 
+        // This applies migrations and creates the DB if it doesn't exist
+        await context.Database.MigrateAsync(); 
         
-        // Run the seeder to create Roles and the Admin User
+        // Seed initial roles and the admin user
         await DbSeeder.SeedRolesAndAdminAsync(services);
         
-        Console.WriteLine(">>> SUCCESS: Database is up-to-date and Admin seeded.");
+        Console.WriteLine(">>> SUCCESS: Database Migrated & Admin Seeded.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($">>> ERROR during initialization: {ex.Message}");
+        Console.WriteLine($">>> ERROR during startup: {ex.Message}");
     }
 }
 
-// 3. MIDDLEWARE PIPELINE
+// 5. MIDDLEWARE PIPELINE
 // ---------------------------------------------------------
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -66,7 +67,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Authentication MUST come before Authorization
+// Order is critical: Authentication must come before Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
