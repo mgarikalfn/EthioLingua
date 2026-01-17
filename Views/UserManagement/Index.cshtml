@@ -1,0 +1,56 @@
+@using BilingualLearningSystem.Models.Identity
+@model IEnumerable<BilingualLearningSystem.Models.Identity.ApplicationUser>
+
+<div class="container-fluid mt-4">
+    <h2 class="mb-4">System Governance: User Management</h2>
+    
+    <div class="card shadow">
+        <div class="card-body">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>User Details</th>
+                        <th>Account Status</th>
+                        <th>Role Control</th>
+                        <th>Safety Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>
+                                <strong>@user.FullName</strong><br/>
+                                <small class="text-muted">@user.Email</small>
+                            </td>
+                            <td>
+                                <span class="badge @(user.Status == UserStatus.Active ? "bg-success" : "bg-danger")">
+                                    @user.Status
+                                </span>
+                            </td>
+                            <td>
+                                <form asp-action="ChangeRole" method="post" class="d-flex gap-1">
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <select name="newRole" class="form-select form-select-sm">
+                                        <option value="Learner">Learner</option>
+                                        <option value="LanguageExpert">Expert</option>
+                                        <option value="Admin">Admin</option>
+                                    </select>
+                                    <button class="btn btn-sm btn-outline-primary">Apply</button>
+                                </form>
+                            </td>
+                            <td>
+                                <form asp-action="UpdateStatus" method="post" class="btn-group">
+                                    <input type="hidden" name="userId" value="@user.Id" />
+                                    <button name="status" value="Active" class="btn btn-sm btn-success">Activate</button>
+                                    <button name="status" value="Muted" class="btn btn-sm btn-warning">Mute</button>
+                                    <button name="status" value="Suspended" class="btn btn-sm btn-danger" onclick="return confirm('Suspend user?')">Suspend</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
