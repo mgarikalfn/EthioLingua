@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using BilingualLearningSystem.Data;
 using BilingualLearningSystem.Models.Identity;
 using Microsoft.AspNetCore.Identity;
+using BilingualLearningSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
 // 3. MVC SERVICES
 // ---------------------------------------------------------
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<AuditService>();
 
 var app = builder.Build();
 

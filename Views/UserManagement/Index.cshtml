@@ -1,56 +1,188 @@
 @using BilingualLearningSystem.Models.Identity
-@model IEnumerable<BilingualLearningSystem.Models.Identity.ApplicationUser>
+@model IEnumerable<ApplicationUser>
 
 <div class="container-fluid mt-4">
-    <h2 class="mb-4">System Governance: User Management</h2>
-    
+
+    <!-- ===================== -->
+    <!-- System Overview -->
+    <!-- ===================== -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Users</h6>
+                    <h3>@ViewBag.TotalUsers</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Active</h6>
+                    <h3 class="text-success">@ViewBag.ActiveUsers</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center shadow-sm">
+                <div class="card-body">
+                    <h6 class="text-muted">Suspended</h6>
+                    <h3 class="text-danger">@ViewBag.SuspendedUsers</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== -->
+    <!-- User Governance -->
+    <!-- ===================== -->
     <div class="card shadow">
-        <div class="card-body">
-            <table class="table table-hover align-middle">
+
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">User Governance</h5>
+            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#createUserModal">
+                + Create User
+            </button>
+        </div>
+
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th>User Details</th>
-                        <th>Account Status</th>
-                        <th>Role Control</th>
-                        <th>Safety Actions</th>
+                        <th>User</th>
+                        <th>Status</th>
+                        <th>Current Role</th>
+                        <th>Change Role</th>
+                        <th class="text-end">Safety Actions</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    @foreach (var user in Model)
-                    {
-                        <tr>
-                            <td>
-                                <strong>@user.FullName</strong><br/>
-                                <small class="text-muted">@user.Email</small>
-                            </td>
-                            <td>
-                                <span class="badge @(user.Status == UserStatus.Active ? "bg-success" : "bg-danger")">
-                                    @user.Status
-                                </span>
-                            </td>
-                            <td>
-                                <form asp-action="ChangeRole" method="post" class="d-flex gap-1">
-                                    <input type="hidden" name="userId" value="@user.Id" />
-                                    <select name="newRole" class="form-select form-select-sm">
-                                        <option value="Learner">Learner</option>
-                                        <option value="LanguageExpert">Expert</option>
-                                        <option value="Admin">Admin</option>
-                                    </select>
-                                    <button class="btn btn-sm btn-outline-primary">Apply</button>
-                                </form>
-                            </td>
-                            <td>
-                                <form asp-action="UpdateStatus" method="post" class="btn-group">
-                                    <input type="hidden" name="userId" value="@user.Id" />
-                                    <button name="status" value="Active" class="btn btn-sm btn-success">Activate</button>
-                                    <button name="status" value="Muted" class="btn btn-sm btn-warning">Mute</button>
-                                    <button name="status" value="Suspended" class="btn btn-sm btn-danger" onclick="return confirm('Suspend user?')">Suspend</button>
-                                </form>
-                            </td>
-                        </tr>
-                    }
+                @foreach (var user in Model)
+                {
+                    var role = ViewBag.UserRoles[user.Id] as string;
+
+                    <tr>
+                        <!-- User Info -->
+                        <td>
+                            <strong>@user.FullName</strong><br />
+                            <small class="text-muted">@user.Email</small>
+                        </td>
+
+                        <!-- Status -->
+                        <td>
+                            <span class="badge 
+                                @(user.Status == UserStatus.Active ? "bg-success" :
+                                  user.Status == UserStatus.Muted ? "bg-warning text-dark" :
+                                  "bg-danger")">
+                                @user.Status
+                            </span>
+                        </td>
+
+                        <!-- Current Role -->
+                        <td>
+                            <span class="badge bg-secondary">
+                                @role
+                            </span>
+                        </td>
+
+                        <!-- Role Control -->
+                        <td>
+                            <form asp-action="ChangeRole" method="post" class="d-flex gap-2">
+                                <input type="hidden" name="userId" value="@user.Id" />
+
+                                <select name="newRole" class="form-select form-select-sm">
+                                    <option disabled selected>Change role</option>
+                                    <option value="Learner">Learner</option>
+                                    <option value="LanguageExpert">Language Expert</option>
+                                    <option value="Admin">Admin</option>
+                                </select>
+
+                                <button class="btn btn-sm btn-outline-primary">
+                                    Update
+                                </button>
+                            </form>
+                        </td>
+
+                        <!-- Safety Actions -->
+                        <td class="text-end">
+                            <form asp-action="UpdateStatus" method="post" class="btn-group">
+                                <input type="hidden" name="userId" value="@user.Id" />
+
+                                <button name="status" value="Active"
+                                        class="btn btn-sm btn-outline-success">
+                                    Activate
+                                </button>
+
+                                <button name="status" value="Muted"
+                                        class="btn btn-sm btn-outline-warning">
+                                    Mute
+                                </button>
+
+                                <button name="status" value="Suspended"
+                                        class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Are you sure you want to suspend this user?')">
+                                    Suspend
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== -->
+<!-- Create User Modal -->
+<!-- ===================== -->
+<div class="modal fade" id="createUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form asp-action="CreateUser" method="post">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input name="email" type="email" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Temporary Password</label>
+                        <input name="password" type="password" class="form-control" required />
+                        <small class="text-muted">User should change this after first login.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Role</label>
+                        <select name="role" class="form-select" required>
+                            <option value="Learner">Learner</option>
+                           <option value="LanguageExpert">Language Expert</option>
+
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Create User
+                    </button>
+                </div>
+
+            </form>
         </div>
     </div>
 </div>
