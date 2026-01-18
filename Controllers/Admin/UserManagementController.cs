@@ -35,12 +35,14 @@ namespace BilingualLearningSystem.Controllers.Admin
             ViewBag.SuspendedUsers = users.Count(u => u.Status == UserStatus.Suspended);
 
             // ===== Resolve Roles =====
+
             var userRoles = new Dictionary<string, string>();
 
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                userRoles[user.Id] = roles.FirstOrDefault() ?? "None";
+                // Fallback to "No Role" if the list is empty
+                userRoles[user.Id] = roles.FirstOrDefault() ?? "No Role";
             }
 
             ViewBag.UserRoles = userRoles;
@@ -83,33 +85,55 @@ namespace BilingualLearningSystem.Controllers.Admin
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> ChangeRole(string userId, string newRole)
-        {
-            if (!await _roleManager.RoleExistsAsync(newRole))
-                return BadRequest("Invalid role");
+       [HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> ChangeRole(string userId, string newRole)
+{
+    if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(newRole))
+    {
+        TempData["Error"] = "Missing User ID or Role selection.";
+        return RedirectToAction(nameof(Index));
+    }
 
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null) return NotFound();
+    var user = await _userManager.FindByIdAsync(userId);
+    if (user == null) return NotFound();
 
-            // Prevent self-demotion
-            if (user.Id == _userManager.GetUserId(User) && newRole != "Admin")
-                return BadRequest("Admin cannot demote themselves");
+    // Safety check: Does the role actually exist in the database?
+    if (!await _roleManager.RoleExistsAsync(newRole))
+    {
+        TempData["Error"] = $"The role '{newRole}' does not exist in the database system.";
+        return RedirectToAction(nameof(Index));
+    }
 
-            var currentRoles = await _userManager.GetRolesAsync(user);
-            await _userManager.RemoveFromRolesAsync(user, currentRoles);
-            await _userManager.AddToRoleAsync(user, newRole);
+    var currentRoles = await _userManager.GetRolesAsync(user);
 
-            await _auditService.LogAction(
-                User.Identity.Name,
-                $"Changed role to {newRole}",
-                user.Email
-            );
+    // Remove old roles
+    if (currentRoles.Any())
+    {
+        await _userManager.RemoveFromRolesAsync(user, currentRoles);
+    }
 
-            return RedirectToAction(nameof(Index));
-        }
+    // Add new role
+    var addResult = await _userManager.AddToRoleAsync(user, newRole);
 
+    if (addResult.Succeeded)
+    {
+        await _auditService.LogAction(
+            User.Identity.Name,
+            "Role Change",
+            user.Email,
+            $"Changed role to {newRole}");
 
+        TempData["Success"] = $"User {user.FullName ?? user.Email} updated to {newRole}.";
+    }
+    else
+    {
+        // Capture specific Identity errors (e.g., database connection, concurrency)
+        TempData["Error"] = string.Join(", ", addResult.Errors.Select(e => e.Description));
+    }
+
+    return RedirectToAction(nameof(Index));
+}
         [HttpPost]
         public async Task<IActionResult> UpdateStatus(string userId, UserStatus status)
         {

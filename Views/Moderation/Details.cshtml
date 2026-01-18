@@ -2,71 +2,101 @@
 @model ModerationDetailViewModel
 
 @{
-    ViewData["Title"] = "Ticket Details";
+    ViewData["Title"] = "Investigation";
 }
 
 <div class="container mt-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-action="Index">Queue</a></li>
-            <li class="breadcrumb-item active">Ticket #@Model.Ticket.Id</li>
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-light p-3 rounded-4 shadow-sm">
+            <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Safety Queue</a></li>
+            <li class="breadcrumb-item active">Investigation: Ticket #@Model.Ticket.Id</li>
         </ol>
     </nav>
 
-    <div class="row">
+    <div class="row g-4">
         <div class="col-md-7">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Report Investigation</h5>
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <h5 class="fw-bold"><i class="bi bi-info-circle text-primary me-2"></i>Report Evidence</h5>
                 </div>
-                <div class="card-body">
-                    <h6>Complaint Reason:</h6>
-                    <div class="p-3 bg-light rounded border mb-3">
-                        "@Model.Ticket.Reason"
+                <div class="card-body px-4">
+                    <div class="p-4 bg-light rounded-4 border-start border-primary border-4 mb-4">
+                        <p class="fst-italic mb-0 text-dark">"@Model.Ticket.Reason"</p>
                     </div>
-                    <p><strong>Submitted By:</strong> @Model.ReporterName</p>
-                    <p><strong>Date:</strong> @Model.Ticket.CreatedAt.ToString("f")</p>
+
+                    <div class="row text-muted small">
+                        <div class="col-6">
+                            <label class="d-block text-uppercase fw-bold">Submitted By</label>
+                            <span><i class="bi bi-person me-1"></i>@Model.ReporterName</span>
+                        </div>
+                        <div class="col-6">
+                            <label class="d-block text-uppercase fw-bold">Incident Date</label>
+                            <span><i class="bi bi-calendar-event me-1"></i>@Model.Ticket.CreatedAt.ToString("f")</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-5">
-            <div class="card border-danger shadow-sm">
-                <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0">Administrative Actions</h5>
+            <div class="card border-0 shadow-sm rounded-4 h-100 overflow-hidden">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-hammer me-2 text-warning"></i>Enforcement Actions</h5>
                 </div>
                 <div class="card-body">
-                    <p><strong>User:</strong> @Model.ReportedUser.FullName</p>
-                    <p><strong>Current Status:</strong> 
-                        <span class="badge bg-info">@Model.ReportedUser.Status</span>
-                    </p>
-                    
-                    <hr />
+                    <div class="text-center mb-4">
+                        <div class="avatar-circle-lg mx-auto bg-danger-subtle text-danger mb-2">
+                            @(!string.IsNullOrEmpty(Model.ReportedUser.FullName) ?
+                                                        Model.ReportedUser.FullName.Substring(0, 1).ToUpper() : "!")
+                        </div>
+                        <h5 class="fw-bold mb-0">@Model.ReportedUser.FullName</h5>
+                        <span class="badge bg-info-subtle text-info border border-info rounded-pill px-3">
+                            Status: @Model.ReportedUser.Status
+                        </span>
+                    </div>
+
+                    <hr class="opacity-10">
 
                     <form asp-action="TakeAction" method="post">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="ticketId" value="@Model.Ticket.Id" />
 
-                        <div class="d-grid gap-2">
-                            <button name="action" value="ResolveOnly" class="btn btn-success">
-                                Mark as Resolved (No Penalty)
-                            </button>
-                            
-                            <button name="action" value="Mute" class="btn btn-warning">
-                                <i class="bi bi-volume-mute"></i> Mute User
+                        <div class="d-grid gap-3">
+                            <button name="action" value="ResolveOnly"
+                                class="btn btn-outline-success rounded-pill fw-bold">
+                                <i class="bi bi-check2-all"></i> Mark as Resolved
                             </button>
 
-                            <button name="action" value="Suspend" class="btn btn-danger" 
-                                    onclick="return confirm('This will ban the user permanently. Proceed?')">
-                                <i class="bi bi-person-x"></i> Suspend User
+                            <button name="action" value="Mute" class="btn btn-warning rounded-pill fw-bold text-dark">
+                                <i class="bi bi-volume-mute-fill"></i> Mute Reported User
+                            </button>
+
+                            <button name="action" value="Suspend" class="btn btn-danger rounded-pill fw-bold"
+                                onclick="return confirm('Restrict user access permanently?')">
+                                <i class="bi bi-person-x-fill"></i> Suspend User
                             </button>
                         </div>
                     </form>
                 </div>
-                <div class="card-footer text-muted small">
-                    Note: All actions are recorded in the system audit log.
+                <div class="card-footer bg-light border-0 text-center small text-muted">
+                    <i class="bi bi-shield-fill-check text-success"></i> Changes logged in System Audit
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .avatar-circle-lg {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border: 2px solid #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+</style>
