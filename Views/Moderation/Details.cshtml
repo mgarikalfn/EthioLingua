@@ -1,0 +1,72 @@
+@using BilingualLearningSystem.Models.ViewModels
+@model ModerationDetailViewModel
+
+@{
+    ViewData["Title"] = "Ticket Details";
+}
+
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Queue</a></li>
+            <li class="breadcrumb-item active">Ticket #@Model.Ticket.Id</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-7">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Report Investigation</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Complaint Reason:</h6>
+                    <div class="p-3 bg-light rounded border mb-3">
+                        "@Model.Ticket.Reason"
+                    </div>
+                    <p><strong>Submitted By:</strong> @Model.ReporterName</p>
+                    <p><strong>Date:</strong> @Model.Ticket.CreatedAt.ToString("f")</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <div class="card border-danger shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Administrative Actions</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>User:</strong> @Model.ReportedUser.FullName</p>
+                    <p><strong>Current Status:</strong> 
+                        <span class="badge bg-info">@Model.ReportedUser.Status</span>
+                    </p>
+                    
+                    <hr />
+
+                    <form asp-action="TakeAction" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="ticketId" value="@Model.Ticket.Id" />
+
+                        <div class="d-grid gap-2">
+                            <button name="action" value="ResolveOnly" class="btn btn-success">
+                                Mark as Resolved (No Penalty)
+                            </button>
+                            
+                            <button name="action" value="Mute" class="btn btn-warning">
+                                <i class="bi bi-volume-mute"></i> Mute User
+                            </button>
+
+                            <button name="action" value="Suspend" class="btn btn-danger" 
+                                    onclick="return confirm('This will ban the user permanently. Proceed?')">
+                                <i class="bi bi-person-x"></i> Suspend User
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer text-muted small">
+                    Note: All actions are recorded in the system audit log.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
