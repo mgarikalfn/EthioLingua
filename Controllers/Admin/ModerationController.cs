@@ -144,5 +144,14 @@ namespace BilingualLearningSystem.Controllers.Admin
             return RedirectToAction(nameof(Index));
         }
 
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AuditHistory()
+        {
+            var logs = await _context.AuditLogs
+                .OrderByDescending(l => l.Timestamp)
+                .ToListAsync();
+            return View(logs);
+        }
+
     }
 }

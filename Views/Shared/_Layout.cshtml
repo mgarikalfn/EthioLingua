@@ -1,5 +1,7 @@
 ﻿<!DOCTYPE html>
-<html lang="en" class="h-100"> <head>
+<html lang="en" class="h-100">
+
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BLMS Portal</title>
@@ -8,30 +10,43 @@
     <style>
         /* Modern Theme Overrides */
         :root {
-            --primary-dark: #1a237e; /* Midnight Blue */
+            --primary-dark: #1a237e;
+            /* Midnight Blue */
             --accent-gold: #ffd700;
         }
 
-        body { background-color: #f8f9fa; }
+        body {
+            background-color: #f8f9fa;
+        }
 
         .navbar {
             background-color: var(--primary-dark) !important;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .navbar-brand, .nav-link { color: white !important; }
-        
-        .nav-link:hover { color: var(--accent-gold) !important; }
+        .navbar-brand,
+        .nav-link {
+            color: white !important;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-gold) !important;
+        }
 
         .admin-badge {
-            background-color: rgba(255,255,255,0.1);
+            background-color: rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             padding: 5px 15px;
         }
 
         /* Sticky Footer Fix */
-        .content-wrapper { flex: 1 0 auto; }
-        footer { flex-shrink: 0; }
+        .content-wrapper {
+            flex: 1 0 auto;
+        }
+
+        footer {
+            flex-shrink: 0;
+        }
     </style>
 </head>
 
@@ -42,8 +57,9 @@
                 <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
                     <i class="bi bi-translate text-warning me-2"></i> BLMS Portal
                 </a>
-                
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
@@ -58,7 +74,8 @@
                         @if (User.IsInRole("Admin"))
                         {
                             <li class="nav-item dropdown admin-badge ms-lg-3">
-                                <a class="nav-link dropdown-toggle fw-bold text-warning" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle fw-bold text-warning" href="#" id="adminDropdown"
+                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-gear-fill"></i> Admin Console
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="adminDropdown">
@@ -72,9 +89,11 @@
                                             <i class="bi bi-exclamation-octagon me-2"></i> Report Handling
                                         </a>
                                     </li>
-                                    <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <a class="dropdown-item text-muted" href="#">
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Moderation" asp-action="AuditHistory">
                                             <i class="bi bi-journal-text me-2"></i> System Logs
                                         </a>
                                     </li>
@@ -121,7 +140,8 @@
 
     <footer class="footer mt-auto py-3 bg-dark text-white text-center">
         <div class="container">
-            <span class="small">&copy; 2026 - Bilingual Learning System - <i class="bi bi-shield-check text-success"></i> Secure Portal</span>
+            <span class="small">&copy; 2026 - Bilingual Learning System - <i
+                    class="bi bi-shield-check text-success"></i> Secure Portal</span>
         </div>
     </footer>
 
@@ -129,4 +149,5 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

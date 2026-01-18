@@ -22,16 +22,16 @@ build_property._RazorSourceGeneratorDebug =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWNjb3VudC9Mb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[/home/girum/Desktop/projects/dotnet/BilingualLearningSystem/Views/Admin/AuditHistory.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vQXVkaXRIaXN0b3J5LmNzaHRtbA==
-build_metadata.AdditionalFiles.CssScope = 
-
 [/home/girum/Desktop/projects/dotnet/BilingualLearningSystem/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/girum/Desktop/projects/dotnet/BilingualLearningSystem/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Qcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/girum/Desktop/projects/dotnet/BilingualLearningSystem/Views/Moderation/AuditHistory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTW9kZXJhdGlvbi9BdWRpdEhpc3RvcnkuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [/home/girum/Desktop/projects/dotnet/BilingualLearningSystem/Views/Moderation/Details.cshtml]
