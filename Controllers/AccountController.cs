@@ -10,7 +10,7 @@ namespace BilingualLearningSystem.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AccountController(UserManager<ApplicationUser> userManager, 
+        public AccountController(UserManager<ApplicationUser> userManager,
                                  SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
@@ -24,16 +24,25 @@ namespace BilingualLearningSystem.Controllers
         }
 
         [HttpPost]
+
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                // This handles the actual login check against the database
                 var result = await _signInManager.PasswordSignInAsync(
                     model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    var roles = await _userManager.GetRolesAsync(user);
+
+                    // Redirect based on Role
+                    if (roles.Contains("Admin"))
+                    {
+                        return RedirectToAction("Index", "UserManagement"); // Or your Admin Dashboard
+                    }
+
                     return RedirectToAction("Index", "Home");
                 }
 
