@@ -48,7 +48,7 @@ namespace BilingualLearningSystem.Controllers
 
                 ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             }
-
+ 
             return View(model);
         }
 

@@ -20,4 +20,4 @@ namespace BilingualLearningSystem.Models.Identity
         Muted,
         Suspended
     }
-}
+} 
